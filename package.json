@@ -1,0 +1,14 @@
+{
+  "name": "gdexplorer",
+  "version": "1.0.0",
+  "description": "The default template for a Neutralinojs app. It's possible to use your favorite frontend framework by using [these steps](https://neutralino.js.org/docs/how-to/use-a-frontend-library).",
+  "main": "index.js",
+  "scripts": {
+    "start": "neu run",
+    "front:build": "cd app && yarn build",
+    "build":"yarn front:build && neu build --release",
+    "dev":"neu run --frontend-lib-dev"
+  },
+  "author": "",
+  "license": "ISC"
+}
