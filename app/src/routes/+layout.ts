@@ -1,11 +1,14 @@
 import { dev } from "$app/environment";
 
-//@ts-ignore
+interface IAuthInfo{
+    accessToken: string;
+    port: number;
+}
 
-export const load = async function ({ data }) {
+export const load = async function () {
     if(dev){
-        let file = "auth_info.json";
-        let json = await import("./../../../.tmp/"+file)
+        // let json = await import("./../../../.tmp/auth_info.json")
+        let json = await import(`$tmp/auth_info.json`) as IAuthInfo;
         return {
             port: json.port,
             token: json.accessToken

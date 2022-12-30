@@ -11,23 +11,14 @@
   "tokenSecurity": "one-time",
   "exportAuthInfo": true,
   "nativeAllowList": [
-    "app.*",
     "os.*",
+    "app.*",
+    "window.*",
+    "storage.*",
+    "computer.*",
     "filesystem.*",
     "debug.log"
   ],
-  "globalVariables": {
-    "TEST1": "Hello",
-    "TEST2": [
-      2,
-      4,
-      5
-    ],
-    "TEST3": {
-      "value1": 10,
-      "value2": {}
-    }
-  },
   "modes": {
     "window": {
       "title": "gdexplorer",
@@ -39,20 +30,20 @@
       "alwaysOnTop": false,
       "icon": "/app/build/favicon.png",
       "enableInspector": true,
-      "borderless": false,
+      "borderless": true,
       "maximize": false,
       "hidden": false,
       "resizable": true,
-      "exitProcessOnClose": false
+      "exitProcessOnClose": true
     }
   },
   "cli": {
     "binaryName": "gdexplorer",
+    "binaryVersion": "4.9.0",
+    "clientVersion": "3.8.0",
     "resourcesPath": "/app/build/",
     "extensionsPath": "/extensions/",
     "clientLibrary": "/app/static/neutralino.js",
-    "binaryVersion": "4.9.0",
-    "clientVersion": "3.8.0",
     "frontendLibrary": {
       "patchFile": "/app/build/index.html",
       "devUrl": "http://localhost:5173"

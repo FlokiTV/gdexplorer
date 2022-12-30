@@ -16,18 +16,6 @@
           window.NL_ARGS = []
       }
       Neutralino.init();
-      Neutralino.events.on('ready', async () => {
-        //   let stats = await Neutralino.filesystem.getStats('./app/build/index.html');
-        //   console.log(stats)
-          let entries = await Neutralino.os.showOpenDialog('Open a file', {
-              // defaultPath: '/home/my/directory/',
-              filters: [
-                  {name: 'Images', extensions: ['jpg', 'png']},
-                  {name: 'All files', extensions: ['*']}
-              ]
-          });
-          console.log('You have selected:', entries);
-      });
   });
 </script>
 
