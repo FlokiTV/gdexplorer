@@ -38,6 +38,10 @@
 		 * */
 		resourceList = GDExplorer.getData().resources.resources;
 	};
+	/**
+	 * TODO:
+	 * 	- extract function to GDExplorer class
+	 * */
 	const resCleaner = async () => {
 		let res = await GDExplorer.resourceCleaner();
 		folderList = res;
