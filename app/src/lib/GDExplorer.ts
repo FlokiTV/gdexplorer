@@ -1,8 +1,8 @@
 import type { GameData } from './GD.types';
 
-interface NFolderEntries{
+interface NFolderEntries {
 	type: string;
-	entry:string;
+	entry: string;
 }
 
 class GDExplorer {
@@ -62,9 +62,9 @@ class GDExplorer {
 	/**
 	 * @description read game folder
 	 */
-	public async readFolder(subfolder = "") {
+	public async readFolder(subfolder = '') {
 		// console.log(this.gamePath+subfolder);
-		let entries = await Neutralino.filesystem.readDirectory(this.gamePath+subfolder);
+		let entries = await Neutralino.filesystem.readDirectory(this.gamePath + subfolder);
 		return entries as [NFolderEntries];
 	}
 	/**
@@ -83,42 +83,43 @@ class GDExplorer {
 	/**
 	 * Functions
 	 */
-	public resourceCleanerList:any = [];
-	public async resourceCleaner(folderPath=['.']){
-		let fp = folderPath.join('/')
+	public resourceCleanerList: any = [];
+	public async resourceCleaner(folderPath = ['.']) {
+		let fp = folderPath.join('/');
 		let content = await this.readFolder(fp);
 		let now = {
 			entry: fp,
 			files: [] as any
-		}
-		let resourceList = this.getData().resources.resources
-		if(folderPath.length == 1) this.resourceCleanerList = []
+		};
+		let resourceList = this.getData().resources.resources;
+		if (folderPath.length == 1) this.resourceCleanerList = [];
 		for (let index = 0; index < content.length; index++) {
 			const element = content[index];
-			let check = []
-			if(	element.type === "DIRECTORY"
-				&& element.entry != "!Trash" 
-				&& element.entry != "." 
-				&& element.entry != ".."){
-					let tmp = [...folderPath] as any
-					tmp.push(element.entry)
-					await this.resourceCleaner(tmp)
-			}
-			else if(element.type != "DIRECTORY"){
-				let pass = true
-				let gdpath = folderPath.length == 1? '' : folderPath.join(`\\`).replace(".\\", '')
+			let check = [];
+			if (
+				element.type === 'DIRECTORY' &&
+				element.entry != '!Trash' &&
+				element.entry != '.' &&
+				element.entry != '..'
+			) {
+				let tmp = [...folderPath] as any;
+				tmp.push(element.entry);
+				await this.resourceCleaner(tmp);
+			} else if (element.type != 'DIRECTORY') {
+				let pass = true;
+				let gdpath = folderPath.length == 1 ? '' : folderPath.join(`\\`).replace('.\\', '');
 				let gdname = element.entry;
-				if(gdpath) gdname = `${gdpath}\\${element.entry}`;
-				check = resourceList.filter((e:any) => e.name === gdname)
-				if(check.length) pass = false
-				if(element.entry == this.gameFile+".autosave") pass = false
-				if(element.entry == this.gameFile) pass = false
-				if(element.entry.endsWith(".json")) pass = false
-				if(pass) now.files.push(element)
+				if (gdpath) gdname = `${gdpath}\\${element.entry}`;
+				check = resourceList.filter((e: any) => e.name === gdname);
+				if (check.length) pass = false;
+				if (element.entry == this.gameFile + '.autosave') pass = false;
+				if (element.entry == this.gameFile) pass = false;
+				if (element.entry.endsWith('.json')) pass = false;
+				pass = true;
+				if (pass) now.files.push(element);
 			}
 		}
-		if(now.files.length)
-			this.resourceCleanerList.push(now)
+		if (now.files.length) this.resourceCleanerList.push(now);
 		// this.resourceCleanerList = [...this.resourceCleanerList]
 		return this.resourceCleanerList;
 	}

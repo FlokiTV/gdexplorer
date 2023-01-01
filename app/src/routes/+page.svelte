@@ -46,6 +46,8 @@
 		let res = await GDExplorer.resourceCleaner();
 		folderList = res;
 		const trash = GDExplorer.gamePath + '!Trash'
+		// console.log(res)
+		// return;
 		try {
 			await Neutralino.filesystem.createDirectory(trash);
 		} catch (error) {
@@ -138,7 +140,7 @@
 			<button class="btn btn-sm btn-info" on:click={doCancel}>back</button>
 			<button
 				class="btn btn-sm btn-success"
-				on:click={() => resCleaner().then(() => console.log(folderList))}>Resource Cleaner</button
+				on:click={resCleaner}>Resource Cleaner</button
 			>
 		</div>
 		{#if folderList.length}
