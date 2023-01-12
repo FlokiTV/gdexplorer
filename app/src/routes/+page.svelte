@@ -34,6 +34,7 @@
 		 * 	- add layouts
 		 * 	- add externalLayout
 		 * 	- add eventsFunctionsExtensions
+		 * 	- clear trash
 		 * */
 		resourceList = GDExplorer.getData().resources.resources;
 	};
