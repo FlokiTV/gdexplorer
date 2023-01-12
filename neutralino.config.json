@@ -29,7 +29,7 @@
       "fullScreen": false,
       "alwaysOnTop": false,
       "icon": "/app/build/favicon.png",
-      "enableInspector": true,
+      "enableInspector": false,
       "borderless": true,
       "maximize": false,
       "hidden": false,
