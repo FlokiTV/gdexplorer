@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Navbar from '$lib/components/navbar.svelte';
 	import IconError from '$lib/icons/iconError.svelte';
 
 	import { browser } from '$app/environment';
@@ -43,37 +42,10 @@
 	 * 	- extract function to GDExplorer class
 	 * */
 	const resCleaner = async () => {
+		// let res = await GDExplorer.readFullFolder();
+		// folderList = res;
 		let res = await GDExplorer.resourceCleaner();
 		folderList = res;
-		const trash = GDExplorer.gamePath + '!Trash'
-		// console.log(res)
-		// return;
-		try {
-			await Neutralino.filesystem.createDirectory(trash);
-		} catch (error) {
-			// console.log(error);
-		}
-
-		for (let index = 0; index < folderList.length; index++) {
-			const element = folderList[index];
-			const entry = element.entry == '.' ? GDExplorer.gamePath : element.entry.replace('./', GDExplorer.gamePath)+'/';
-			const tmp = element.entry.replace('.', trash)+'/';
-			const t = element.entry.split('/');
-			const tt: any = [];
-			console.log(entry)
-			for (let ii = 1; ii < t.length; ii++) {
-				tt.push(t[ii]);
-				try {
-					await Neutralino.filesystem.createDirectory(trash + '/' + tt.join('/'));
-				} catch (error) {
-					// console.log(error);
-				}
-			}
-			for (let iii = 0; iii < element.files.length; iii++) {
-				const file = element.files[iii];
-				await Neutralino.filesystem.moveFile(entry+file.entry, tmp+file.entry);
-			}
-		}
 		return;
 	};
 	const doCancel = () => {
@@ -87,7 +59,6 @@
 		});
 </script>
 
-<Navbar />
 {#if !loaded}
 	<div class="p-2">
 		<div class="flex justify-center space-x-2">
@@ -136,12 +107,22 @@
 				{GDExplorer.getData().resources.resources.length}
 			</div>
 		</div>
-		<div class="flex w-[500px] m-auto space-x-2 my-2">
+		<div class="flex w-[500px] m-auto space-x-2 my-2 flex-wrap">
 			<button class="btn btn-sm btn-info" on:click={doCancel}>back</button>
+			<!-- <a class="btn btn-sm btn-info" href="file-explorer">File Explorer</a> -->
 			<button
 				class="btn btn-sm btn-success"
 				on:click={resCleaner}>Resource Cleaner</button
 			>
+			{#if folderList.length}
+				<button class="btn btn-sm btn-error" on:click={() => GDExplorer.moveToTrash(folderList).then(resCleaner)}>move to trash</button>
+			{/if}
+
+			<!-- <button class="btn btn-sm btn-info">Objects</button>
+			<button class="btn btn-sm btn-info">Groups</button>
+			<button class="btn btn-sm btn-info">Layouts</button>
+			<button class="btn btn-sm btn-info">Extensions</button>
+			<button class="btn btn-sm btn-info">Events</button> -->
 		</div>
 		{#if folderList.length}
 			<div class="overflow-x-auto">

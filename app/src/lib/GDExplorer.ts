@@ -83,7 +83,41 @@ class GDExplorer {
 	/**
 	 * Functions
 	 */
+	public fullFolders: any = [];
+	public async readFullFolder(folderPath = ['.']){
+		let fp = folderPath.join('/');
+		let content = await this.readFolder(fp);
+		let now = {
+			entry: fp,
+			files: [] as any
+		};
+		if (folderPath.length == 1) this.fullFolders = []; //reset
+
+		for (let index = 0; index < content.length; index++) {
+			const element = content[index];
+			if (
+				element.type === 'DIRECTORY' &&
+				element.entry != '!Trash' &&
+				element.entry != '.' &&
+				element.entry != '..'
+			) {
+				let tmp = [...folderPath] as any;
+				tmp.push(element.entry);
+				await this.readFullFolder(tmp);
+			} else if (element.type == 'FILE') {
+				now.files.push(element);
+			}
+		}
+
+		if (now.files.length) this.fullFolders.push(now);
+		return this.fullFolders;
+	}
+
 	public resourceCleanerList: any = [];
+	public async resCleaner() {
+		await this.readFullFolder();
+	}
+
 	public async resourceCleaner(folderPath = ['.']) {
 		let fp = folderPath.join('/');
 		let content = await this.readFolder(fp);
@@ -91,8 +125,10 @@ class GDExplorer {
 			entry: fp,
 			files: [] as any
 		};
-		let resourceList = this.getData().resources.resources;
 		if (folderPath.length == 1) this.resourceCleanerList = [];
+
+		let resourceList = this.getData().resources.resources;
+
 		for (let index = 0; index < content.length; index++) {
 			const element = content[index];
 			let check = [];
@@ -115,13 +151,43 @@ class GDExplorer {
 				if (element.entry == this.gameFile + '.autosave') pass = false;
 				if (element.entry == this.gameFile) pass = false;
 				if (element.entry.endsWith('.json')) pass = false;
-				pass = true;
+				// pass = true; //force bypass
 				if (pass) now.files.push(element);
 			}
 		}
 		if (now.files.length) this.resourceCleanerList.push(now);
-		// this.resourceCleanerList = [...this.resourceCleanerList]
 		return this.resourceCleanerList;
+	}
+
+	public async moveToTrash(folderList:any) {
+		const trash = this.gamePath + '!Trash';
+		try {
+			await Neutralino.filesystem.createDirectory(trash);
+		} catch (error) {
+			console.log(error);
+		}
+		for (let index = 0; index < folderList.length; index++) {
+			const element = folderList[index];
+			const entry = element.entry == '.' ? this.gamePath : element.entry.replace('./', this.gamePath)+'/';
+			const tmp = element.entry.replace('.', trash)+'/';//replace original location to trash+folder_structure+'/'
+			const t = element.entry.split('/');//folder structure
+			const tt: any = [];
+			console.log(entry)
+			for (let ii = 1; ii < t.length; ii++) {
+				tt.push(t[ii]);
+				try {
+					//create structure
+					await Neutralino.filesystem.createDirectory(trash + '/' + tt.join('/'));
+				} catch (error) {
+					// console.log(error);
+				}
+			}
+			for (let iii = 0; iii < element.files.length; iii++) {
+				const file = element.files[iii];
+				await Neutralino.filesystem.moveFile(entry+file.entry, tmp+file.entry);
+			}
+		}
+		return;
 	}
 }
 
